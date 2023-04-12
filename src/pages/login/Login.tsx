@@ -1,10 +1,18 @@
 import "./Login.scss";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { signin } from "../../features/user/userSlice";
 
 export default function Login() {
-  const onFinish = (values: any) => {
-    console.log(values);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const userinfo = useAppSelector(state => state.user.username) || localStorage.getItem("username");
+  // 验证规则通过的成功回调
+  const onFinish = async (values: any) => {
+    await dispatch(signin(values));
+    navigate("/", { replace: true });
   };
   return (
     <div className="Login flex align-center justify-center">

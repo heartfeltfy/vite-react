@@ -1,3 +1,4 @@
+import { AppDispatch } from "./../../app/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserSlice {
@@ -17,6 +18,23 @@ export const userSlice = createSlice({
     },
   },
 });
+
+// 登录
+export const signin = (userinfo: UserSlice) => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setAuth(userinfo));
+    localStorage.setItem("username", userinfo.username);
+    // const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    // return response.json();
+  };
+};
+// 登出
+export const signout = () => {
+  return async (dispatch: AppDispatch) => {
+    dispatch(setAuth({ username: "" }));
+    localStorage.removeItem("username");
+  };
+};
 
 export const { setAuth } = userSlice.actions;
 
