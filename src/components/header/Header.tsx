@@ -1,7 +1,7 @@
-import { useAppSelector } from '../../app/hooks'
 export default function Header() {
-
-  const username = useAppSelector(state => state.user.username)
-
-  return <div className="Header">Header==={username}</div>;
+  return (
+    <div className="Header">
+      <h1>Header</h1>
+    </div>
+  );
 }

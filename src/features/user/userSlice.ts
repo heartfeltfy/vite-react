@@ -5,7 +5,7 @@ interface UserSlice {
 }
 
 const initialState = {
-  username: "chenmf1003@email.com",
+  username: "",
 } as UserSlice;
 
 export const userSlice = createSlice({
@@ -17,5 +17,7 @@ export const userSlice = createSlice({
     },
   },
 });
+
 export const { setAuth } = userSlice.actions;
+
 export default userSlice.reducer;
