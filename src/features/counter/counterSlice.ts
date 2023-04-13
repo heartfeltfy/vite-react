@@ -9,7 +9,6 @@ const initialState: CounterState = {
   value: 0,
   status: "idle",
 };
-
 export const counterSlice = createSlice({
   name: "counter",
   initialState,
