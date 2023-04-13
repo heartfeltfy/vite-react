@@ -13,7 +13,7 @@ export default function Header() {
   };
   return (
     <div className="Header">
-      <h1 onClick={logout}>Header--{username}</h1>
+      <h1 onClick={logout}>Header--{username}---权限修改</h1>
     </div>
   );
 }
