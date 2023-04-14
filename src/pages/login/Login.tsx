@@ -2,7 +2,7 @@ import "./Login.scss";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch } from "../../store-hooks";
 import { signin } from "../../features/user/userSlice";
 
 export default function Login() {

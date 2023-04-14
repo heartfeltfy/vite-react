@@ -5,7 +5,7 @@ import "antd/dist/reset.css";
 import "./index.css";
 import "./styles/flex.scss";
 import { BrowserRouter } from "react-router-dom";
-import { store } from "./app/store";
+import { store } from "./store";
 import { Provider } from "react-redux";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
