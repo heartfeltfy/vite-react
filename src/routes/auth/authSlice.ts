@@ -5,10 +5,6 @@ export interface AuthInitialState {
   accessToken: string;
   username: string;
 }
-export interface UserInfo {
-  username: string;
-  password: string;
-}
 const initialState = {
   accessToken: "",
   username: "",
@@ -34,7 +30,7 @@ export const authSlice = createSlice({
 const USER_INFO = "auth";
 
 // 用户登录
-export const login = (userInfo: UserInfo) => {
+export const login = (userInfo: any) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setAuth({ username: "chenmf1003@gmail.com", accessToken: "accessToken" }));
     setStorage(userInfo);
@@ -49,7 +45,7 @@ export const logout = () => {
 };
 
 // 用户鉴权信息持久化
-function setStorage(auth: UserInfo) {
+function setStorage(auth: any) {
   localStorage.setItem(USER_INFO, JSON.stringify(auth));
 }
 // 清除用户信息

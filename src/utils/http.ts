@@ -1,4 +1,4 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
 import NProgress from "nprogress";
 import { store } from "../store";
 
@@ -12,16 +12,6 @@ export const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     NProgress.start();
-    return config;
-  },
-  error => {
-    NProgress.done();
-    return Promise.reject(error);
-  },
-);
-
-instance.interceptors.request.use(
-  config => {
     // 添加 Authorization 以验证用户身份
     const { accessToken } = store.getState().auth;
     if (accessToken) {
@@ -31,16 +21,14 @@ instance.interceptors.request.use(
     return config;
   },
   error => {
+    NProgress.done();
     return Promise.reject(error);
-  },
-  {
-    runWhen: onRunWhenInternalApi,
   },
 );
 
 instance.interceptors.response.use(
   response => {
-    NProgress.start();
+    NProgress.done();
     return response;
   },
   error => {
@@ -48,8 +36,3 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-// 用于
-function onRunWhenInternalApi(config: InternalAxiosRequestConfig) {
-  return !!config.url && config.url.startsWith(baseURL);
-}
