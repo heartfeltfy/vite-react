@@ -6,8 +6,9 @@ import ErrorPage from "@/views/ErrorPage";
 import Goods from "@/views/goods/Goods";
 import Login from "./routes/auth/Login";
 import Root from "@/routes/Root";
-import Layout from "@/routes/Layout";
+import Layout from "@/routes/LayoutView";
 import Home from "./views/home/Home";
+import AuthProvider from "./routes/auth/AuthProvider";
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +19,14 @@ export const router = createBrowserRouter([
         element: <Layout />,
         children: [
           { path: "/", element: <Home /> },
-          { path: "goods", element: <Goods /> }
+          {
+            path: "goods",
+            element: (
+              <AuthProvider>
+                <Goods />
+              </AuthProvider>
+            )
+          }
         ]
       },
       // 登录组件
