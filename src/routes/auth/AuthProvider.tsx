@@ -5,7 +5,7 @@ import { getStorage } from "./authSlice";
 
 // 鉴权组件
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
-  const userinfo = useAppSelector(state => state.auth.username) || (getStorage() && getStorage().username);
+  const userinfo = useAppSelector(state => state.auth.username) || getStorage()!.username;
   const location = useLocation();
 
   if (!userinfo) {

@@ -1,11 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-// 引入react-router-dom
-import { RouterProvider } from "react-router-dom";
-// 路由列表
-import { router } from "./routes";
-
 import { Provider } from "react-redux";
 // react-redux  仓库
 import { store } from "./store";
@@ -21,6 +16,7 @@ import { ConfigProvider } from "antd";
 
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import App from "./App";
 
 NProgress.configure({ showSpinner: false });
 
@@ -29,8 +25,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     {/* 使用react-redux */}
     <Provider store={store}>
       <ConfigProvider locale={locale}>
-        {/* 使用react-router-dom */}
-        <RouterProvider router={router} />
+        <App />
       </ConfigProvider>
     </Provider>
   </React.StrictMode>

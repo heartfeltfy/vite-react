@@ -1,10 +1,10 @@
 import { RequestConfig } from "@/hooks/useRequest";
 
-export const getAccessToken = (data: { username: string; password: string }) => {
+export const getAccessToken = (data: { username: string; password: string }): RequestConfig => {
   return {
     method: "post",
     url: "/auth/login",
-    data,
+    data
   };
 };
 
@@ -12,6 +12,6 @@ export const getAccessToken = (data: { username: string; password: string }) => 
 export const getProducts = (): RequestConfig => {
   return {
     method: "get",
-    url: "/products",
+    url: "/products"
   };
 };

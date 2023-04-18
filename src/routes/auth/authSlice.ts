@@ -30,9 +30,9 @@ export const authSlice = createSlice({
 const USER_INFO = "auth";
 
 // 用户登录
-export const login = (userInfo: any) => {
+export const login = (userInfo: AuthInitialState) => {
   return async (dispatch: AppDispatch) => {
-    dispatch(setAuth({ username: "chenmf1003@gmail.com", accessToken: "accessToken" }));
+    dispatch(setAuth(userInfo));
     setStorage(userInfo);
   };
 };
@@ -44,17 +44,32 @@ export const logout = () => {
   };
 };
 
+// 用于持久化仓库数据
+export const durableInfo = (callback: VoidFunction) => {
+  return (dispatch: AppDispatch) => {
+    const info = getStorage();
+
+    if (!info) return;
+
+    dispatch(login(info));
+    callback();
+  };
+};
+
 // 用户鉴权信息持久化
-function setStorage(auth: any) {
+function setStorage(auth: AuthInitialState) {
   localStorage.setItem(USER_INFO, JSON.stringify(auth));
 }
 // 清除用户信息
 function clearStorage() {
   localStorage.removeItem(USER_INFO);
 }
+// 获取用户信息
+export function getStorage(): AuthInitialState | null {
+  const userInfo = localStorage.getItem(USER_INFO);
+  if (!userInfo) return null;
 
-export function getStorage() {
-  return localStorage.getItem(USER_INFO) && JSON.parse(localStorage.getItem(USER_INFO) as string);
+  return JSON.parse(userInfo);
 }
 export const { setAuth, clearAuth } = authSlice.actions;
 
