@@ -15,6 +15,10 @@ import "antd/dist/reset.css";
 import "./index.css";
 import "./styles/flex.scss";
 
+import "dayjs/locale/zh-cn";
+import locale from "antd/locale/zh_CN";
+import { ConfigProvider } from "antd";
+
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 
@@ -24,8 +28,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     {/* 使用react-redux */}
     <Provider store={store}>
-      {/* 使用react-router-dom */}
-      <RouterProvider router={router} />
+      <ConfigProvider locale={locale}>
+        {/* 使用react-router-dom */}
+        <RouterProvider router={router} />
+      </ConfigProvider>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

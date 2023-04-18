@@ -8,8 +8,9 @@ specifiers:
   '@types/react': ^18.0.28
   '@types/react-dom': ^18.0.11
   '@vitejs/plugin-react': ^3.1.0
-  antd: ^5.4.0
+  antd: 5.4.2
   axios: ^1.3.5
+  dayjs: ^1.11.7
   mockjs: ^1.1.0
   nprogress: ^0.2.0
   prettier: ^2.8.7
@@ -25,8 +26,9 @@ specifiers:
 dependencies:
   '@ant-design/icons': 5.0.1_biqbaboplfbrettd7655fr4n2y
   '@reduxjs/toolkit': 1.9.3_k4ae6lp43ej6mezo3ztvx6pykq
-  antd: 5.4.0_biqbaboplfbrettd7655fr4n2y
+  antd: 5.4.2_biqbaboplfbrettd7655fr4n2y
   axios: 1.3.5
+  dayjs: 1.11.7
   mockjs: 1.1.0
   nprogress: 0.2.0
   react: 18.2.0
@@ -816,8 +818,8 @@ packages:
       color-convert: 2.0.1
     dev: true
 
-  /antd/5.4.0_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-eWCNFUGMuuHu2wufbq7yzPzwSesO2Our0AnCjCkom646wHw2TOUhfS58FeUSlV/Hhjb+ZLEvdy/mC+vJUb+EXg==}
+  /antd/5.4.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-OxXZ7joFf6Um4zeXm07tyJ9WV6eMwUw1KUmewfM/BDceUFVtJVf7YbBTBfX3JTl+jOuSpMSb4naFhOCgVwtyFw==}
     peerDependencies:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
@@ -850,7 +852,7 @@ packages:
       rc-motion: 2.6.3_biqbaboplfbrettd7655fr4n2y
       rc-notification: 5.0.3_biqbaboplfbrettd7655fr4n2y
       rc-pagination: 3.3.1_biqbaboplfbrettd7655fr4n2y
-      rc-picker: 3.5.1_mlnkrlbros4rghcauwy625gk7y
+      rc-picker: 3.6.2_mlnkrlbros4rghcauwy625gk7y
       rc-progress: 3.4.1_biqbaboplfbrettd7655fr4n2y
       rc-rate: 2.10.0_biqbaboplfbrettd7655fr4n2y
       rc-resize-observer: 1.3.1_biqbaboplfbrettd7655fr4n2y
@@ -1695,8 +1697,8 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /rc-picker/3.5.1_mlnkrlbros4rghcauwy625gk7y:
-    resolution: {integrity: sha512-T/rqhB2IVU014k14x713JGzHCUT56YEYsGkUT8vBVOANdoRCe18oN/8zdeWYB/7mQRTTHJ1vCSPnxOowjLyN8Q==}
+  /rc-picker/3.6.2_mlnkrlbros4rghcauwy625gk7y:
+    resolution: {integrity: sha512-acLNCi2WTNAuvTtcEzKp72mU15ni0sqrIKVlEcj04KgLZxhlVPMabCS+Sc8VuOCPJbOcW0XeOydbNnJbWTvzxg==}
     engines: {node: '>=8.x'}
     peerDependencies:
       date-fns: '>= 2.x'
