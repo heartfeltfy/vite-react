@@ -8,12 +8,25 @@ export default defineConfig({
   plugins: [
     react(),
     viteMockServe({
-      mockPath: "mock",
-    }),
+      mockPath: "mock"
+    })
   ],
   resolve: {
     alias: {
-      "@": resolve(__dirname, "src"),
-    },
+      "@": resolve(__dirname, "src")
+    }
   },
+
+  build: {
+    outDir: "dist", //指定输出路径
+    minify: "esbuild",
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        chunkFileNames: "assets/js/[name]-[hash].js",
+        entryFileNames: "assets/js/[name]-[hash].js",
+        assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
+      }
+    }
+  }
 });

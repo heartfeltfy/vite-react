@@ -7,7 +7,7 @@ export interface AuthInitialState {
 }
 const initialState = {
   accessToken: "",
-  username: "",
+  username: ""
 } as AuthInitialState;
 
 export const authSlice = createSlice({
@@ -23,8 +23,8 @@ export const authSlice = createSlice({
     clearAuth(state) {
       state.accessToken = "";
       state.username = "";
-    },
-  },
+    }
+  }
 });
 
 const USER_INFO = "auth";
