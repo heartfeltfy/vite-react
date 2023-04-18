@@ -9,7 +9,7 @@ export default function Root() {
   return <Outlet />;
 }
 
-// 限制已登录用户等到登录页面
+// 限制已登录用户到登录页面
 export function authLogin() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -18,8 +18,6 @@ export function authLogin() {
   useEffect(() => {
     dispatch(
       durableInfo(() => {
-        console.log(pathname);
-
         if (pathname === "/login") {
           navigate("/", { replace: true });
           return;

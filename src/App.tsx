@@ -15,19 +15,15 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
         element: <Layout />,
         children: [
-          { index: true, element: <Home /> },
+          { path: "/", element: <Home /> },
           { path: "goods", element: <Goods /> }
         ]
-      }
+      },
+      // 登录组件
+      { path: "/login", element: <Login /> }
     ]
-  },
-  // 登录组件
-  {
-    path: "/login",
-    element: <Login />
   }
 ]);
 
