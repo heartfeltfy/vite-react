@@ -21,8 +21,6 @@ export const router = createBrowserRouter([
           </AuthProvider>
         ),
       },
-      // 登录组件
-      { path: "login", element: <Login /> },
       {
         path: "goods",
         element: (
@@ -33,4 +31,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  // 登录组件
+  { path: "/login", element: <Login /> },
 ]);

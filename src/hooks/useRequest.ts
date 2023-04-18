@@ -52,7 +52,9 @@ export const useRequest = () => {
 
 // 鉴权失效返回登录页面
 function authenticationFailed(axios: AxiosError) {
-  const status = axios.response?.status;
+  // 状态码 401  鉴权失效
+  const status = axios.response?.status === 401;
+  // 判断是否为请求接口
   const isApiRequest = axios.request.responseURL.startsWith(baseURL);
 
   if (status && isApiRequest) {
