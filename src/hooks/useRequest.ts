@@ -18,35 +18,38 @@ export const useRequest = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const sendHttp = useCallback(({ url, method, data, params }: RequestConfig, callback: (response: any) => void) => {
-    setLoading(true);
-    setError("");
+  const sendHttp = useCallback(
+    ({ url, method, data, params }: RequestConfig, callback: (response: any) => void) => {
+      setLoading(true);
+      setError("");
 
-    const controller = new AbortController();
+      const controller = new AbortController();
 
-    instance({ url, method, data, params, signal: controller.signal })
-      .then(result => {
-        callback(result.data);
-      })
-      .catch(error => {
-        if (controller.signal.aborted) return;
-        const errorConfig = error as AxiosError;
+      instance({ url, method, data, params, signal: controller.signal })
+        .then(result => {
+          callback(result.data);
+        })
+        .catch(error => {
+          if (controller.signal.aborted) return;
+          const errorConfig = error as AxiosError;
 
-        // 鉴权失效
-        authenticationFailed(errorConfig);
+          // 鉴权失效
+          authenticationFailed(errorConfig);
 
-        const errorData: any = errorConfig.response?.data;
+          const errorData: any = errorConfig.response?.data;
 
-        if (errorData && Object.keys(errorData).length > 0) {
-          setError(errorData.error || errorData.message || JSON.stringify(errorData));
-          return;
-        }
+          if (errorData && Object.keys(errorData).length > 0) {
+            setError(errorData.error || errorData.message || JSON.stringify(errorData));
+            return;
+          }
 
-        setError(errorConfig.message);
-      })
-      .finally(() => setLoading(false));
-    return controller;
-  }, []);
+          setError(errorConfig.message);
+        })
+        .finally(() => setLoading(false));
+      return controller;
+    },
+    []
+  );
   return { loading, error, sendHttp };
 };
 
