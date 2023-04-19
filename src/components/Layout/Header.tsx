@@ -1,9 +1,27 @@
 import { Link } from "react-router-dom";
-import { Layout, Typography } from "antd";
+import { Button, Layout, Typography } from "antd";
+import { useAppDispatch } from "@/store-hooks";
+import { logout } from "@/routes/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const signout = async () => {
+    await dispatch(logout());
+    // 退出登录回到不需要鉴权的首页
+    navigate("/", { replace: true });
+  };
+
   return (
-    <Layout.Header style={{ display: "flex", alignItems: "center", paddingInline: 24 }}>
+    <Layout.Header
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingInline: 24
+      }}
+    >
       <Link to="/" style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
         <img src="/vite.svg" alt="" />
         <Typography.Title
@@ -13,6 +31,9 @@ export default function Header() {
           Vite-React
         </Typography.Title>
       </Link>
+      <Button type="primary" onClick={signout}>
+        退出登录
+      </Button>
     </Layout.Header>
   );
 }

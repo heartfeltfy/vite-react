@@ -8,9 +8,7 @@ export default function Footer() {
   );
 }
 
-const DEFAULT_MESSAGE = `${new Date().toLocaleString()}---Vite-React`;
-
-function Copyright({ message = DEFAULT_MESSAGE }: { message?: string }) {
+function Copyright({ message = `${new Date().toLocaleString()}---Vite-React` }) {
   return (
     <>
       <Typography.Text type="secondary">{message}</Typography.Text>
