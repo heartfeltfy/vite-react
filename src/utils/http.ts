@@ -6,7 +6,7 @@ export const baseURL = window?._CONFIG?.baseURL || window.location.origin;
 
 export const instance = axios.create({
   timeout: 10_000,
-  baseURL,
+  baseURL
 });
 
 instance.interceptors.request.use(
@@ -23,7 +23,7 @@ instance.interceptors.request.use(
   error => {
     NProgress.done();
     return Promise.reject(error);
-  },
+  }
 );
 
 instance.interceptors.response.use(
@@ -34,5 +34,5 @@ instance.interceptors.response.use(
   error => {
     NProgress.done();
     return Promise.reject(error);
-  },
+  }
 );
