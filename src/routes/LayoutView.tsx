@@ -7,8 +7,7 @@ import {
   HomeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  OrderedListOutlined,
-  SettingOutlined
+  OrderedListOutlined
 } from "@ant-design/icons";
 
 const { Sider, Content } = Layout;
@@ -65,7 +64,6 @@ export interface MenuItem {
   icon?: ReactNode;
   children?: MenuItem[];
 }
-
 // 路由列表
 const menuLists: MenuItem[] = [
   {
@@ -86,6 +84,24 @@ const menuLists: MenuItem[] = [
 ];
 
 function useRouterMenu(menus: MenuItem[]) {
+  // 处理多级菜单
+  function handleMenu(menus: MenuItem[]): { label: string | ReactNode }[] {
+    return menus.map(route => {
+      if (route.children && route.children.length > 0) {
+        return {
+          label: <Link to={route.url!}>{route.label}</Link>,
+          key: route.url || route.label,
+          icon: route.icon,
+          children: handleMenu(route.children)
+        };
+      }
+      return {
+        label: <Link to={route.url!}>{route.label}</Link>,
+        key: route.url || route.label,
+        icon: route.icon
+      };
+    });
+  }
   return useMemo(() => {
     return menus.map(route => {
       // 如果存在url
@@ -96,13 +112,9 @@ function useRouterMenu(menus: MenuItem[]) {
           icon: route.icon
         };
       }
+      // 处理多级菜单
       if (route.children && route.children.length > 0) {
-        const submenus = route.children.map(item => {
-          return {
-            key: item.url || item.label,
-            label: <Link to={item.url!}>{item.label}</Link>
-          };
-        });
+        const submenus = handleMenu(route.children);
         return {
           label: route.label,
           key: route.label,
