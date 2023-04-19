@@ -1,14 +1,16 @@
 .layout_view {
   height: 100%;
+  overflow: hidden;
   .layout_section {
     overflow: hidden auto;
     .sider {
       background-color: #fff;
       overflow: hidden auto;
+      border-right: 1px solid rgba(5, 5, 5, 0.06);
     }
     .content {
       overflow: hidden auto;
-      padding: 20px;
+      padding: 20px 20px 0;
     }
   }
 }

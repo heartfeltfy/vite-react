@@ -1,3 +1,3 @@
 window._CONFIG = {
-  baseURL: "https://dummyjson.com",
+  baseURL: "https://dummyjson.com"
 };
