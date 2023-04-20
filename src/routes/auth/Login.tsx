@@ -24,7 +24,8 @@ export default function Login() {
       const { token: accessToken, username } = result;
       const userInfo = {
         accessToken,
-        username
+        username,
+        auth: ["user"]
       };
 
       authSuccess(userInfo);

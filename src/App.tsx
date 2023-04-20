@@ -3,14 +3,52 @@ import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "@/views/ErrorPage";
-import Goods from "@/views/goods/Goods";
 import Root from "@/routes/Root";
 import LayoutView from "@/routes/LayoutView";
 import Home from "./views/home/Home";
 import AuthProvider from "./routes/auth/AuthProvider";
-import { lazy } from "react";
+import { ReactNode, lazy } from "react";
+import { HomeOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 const Login = lazy(() => import("./routes/auth/Login"));
+const User = lazy(() => import("./views/system/user/Users"));
+const Roles = lazy(() => import("./views/system/role/Roles"));
+const AddNewUsers = lazy(() => import("./views/system/user/AddNewUsers"));
+
+export interface MenuItem {
+  label: string;
+  url?: string;
+  icon?: ReactNode;
+  children?: MenuItem[];
+  auth?: string;
+}
+// 路由列表
+export const MENU_LISTS: MenuItem[] = [
+  {
+    label: "首页",
+    url: "/",
+    icon: <HomeOutlined />
+  },
+  {
+    label: "系统设置",
+    icon: <OrderedListOutlined />,
+    auth: "setting",
+    children: [
+      {
+        label: "用户管理",
+        icon: <OrderedListOutlined />,
+        auth: "user",
+        url: "/user"
+      },
+      {
+        label: "角色管理",
+        icon: <OrderedListOutlined />,
+        auth: "role",
+        url: "/role"
+      }
+    ]
+  }
+];
 
 export const router = createBrowserRouter([
   {
@@ -22,10 +60,26 @@ export const router = createBrowserRouter([
         children: [
           { path: "/", element: <Home /> },
           {
-            path: "goods",
+            path: "user",
             element: (
               <AuthProvider>
-                <Goods />
+                <User />
+              </AuthProvider>
+            )
+          },
+          {
+            path: "user/add",
+            element: (
+              <AuthProvider>
+                <AddNewUsers />
+              </AuthProvider>
+            )
+          },
+          {
+            path: "role",
+            element: (
+              <AuthProvider>
+                <Roles />
               </AuthProvider>
             )
           }

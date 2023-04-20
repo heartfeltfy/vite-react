@@ -1,18 +1,16 @@
-import { Breadcrumb, Button, Layout, Menu } from "antd";
+import { Breadcrumb, Button, Layout, Menu, MenuProps } from "antd";
 import classes from "./LayoutView.module.scss";
-import { Footer, Header } from "@/components";
+import { Footer, Header } from "./index";
 import { Dispatch, ReactNode, SetStateAction, useMemo, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import {
-  HomeOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  OrderedListOutlined
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { MenuItem, MENU_LISTS } from "@/App";
 
 const { Sider, Content } = Layout;
+
 export default function LayoutView() {
   const [collapsed, setCollapsed] = useState(false);
+  const items: PathType[] = [];
   return (
     <Layout className={classes.layout_view}>
       <Header />
@@ -23,11 +21,11 @@ export default function LayoutView() {
           collapsedWidth={8 * 8}
           collapsed={collapsed}
         >
-          <LayoutMenu />
+          <LayoutMenu menus={MENU_LISTS} />
         </Sider>
         <Layout className={classes.content}>
-          <LayoutBreadcrumb collapsed={collapsed} setCollapsed={setCollapsed} />
-          <Content style={{ backgroundColor: "#fff" }}>
+          <LayoutBreadcrumb paths={items} collapsed={collapsed} setCollapsed={setCollapsed} />
+          <Content style={{ backgroundColor: "#fff", padding: "20px" }}>
             <Outlet />
           </Content>
           <Footer />
@@ -38,14 +36,17 @@ export default function LayoutView() {
 }
 
 // 面包屑组件
-const items = [{ title: "home" }, { title: "goods" }];
+
 function LayoutBreadcrumb({
   collapsed,
-  setCollapsed
+  setCollapsed,
+  paths
 }: {
   collapsed: boolean;
   setCollapsed: Dispatch<SetStateAction<boolean>>;
+  paths: PathType[];
 }) {
+  const items = itemRender(paths);
   return (
     <div className="flex align-center" style={{ marginBottom: 20, gap: "1em" }}>
       <Button type="primary" onClick={() => setCollapsed(!collapsed)}>
@@ -55,34 +56,55 @@ function LayoutBreadcrumb({
     </div>
   );
 }
+interface PathType {
+  title: string;
+  url: string;
+}
+
+// 处理面包屑组件可点击跳转
+function itemRender(paths: PathType[]) {
+  return useMemo(() => {
+    return paths
+      .map(({ title }) => {
+        return {
+          title: <Link to={title}>{title}</Link>
+        };
+      })
+      .concat([{ title: <Link to="/">首页</Link> }]);
+  }, [JSON.stringify(paths)]);
+}
 
 // 菜单组件
 
-export interface MenuItem {
-  label: string;
-  url?: string;
-  icon?: ReactNode;
-  children?: MenuItem[];
-}
-// 路由列表
-const menuLists: MenuItem[] = [
-  {
-    label: "首页",
-    url: "/",
-    icon: <HomeOutlined />
-  },
-  {
-    label: "列表页",
-    icon: <OrderedListOutlined />,
-    children: [
-      {
-        label: "商品列表页",
-        url: "/goods"
-      }
-    ]
-  }
-];
+function LayoutMenu({ menus }: { menus: MenuItem[] }) {
+  const selectedKeys = ["用户管理", "/user"];
+  const [openKeys, setOpenKeys] = useState<string[]>(selectedKeys);
+  const items = useRouterMenu(menus);
 
+  // 默认展开一个
+  const onOpenChange: MenuProps["onOpenChange"] = keys => {
+    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+
+    if (items.map(v => v.label).indexOf(latestOpenKey!) === -1) {
+      setOpenKeys(keys);
+    } else {
+      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+    }
+  };
+
+  return (
+    <Menu
+      style={{ height: "100%" }}
+      mode="inline"
+      items={items}
+      openKeys={openKeys}
+      selectedKeys={selectedKeys}
+      onOpenChange={onOpenChange}
+    />
+  );
+}
+
+// 处理菜单
 function useRouterMenu(menus: MenuItem[]) {
   // 处理多级菜单
   function handleMenu(menus: MenuItem[]): { label: string | ReactNode }[] {
@@ -90,14 +112,14 @@ function useRouterMenu(menus: MenuItem[]) {
       if (route.children && route.children.length > 0) {
         return {
           label: <Link to={route.url!}>{route.label}</Link>,
-          key: route.url || route.label,
+          key: route.url,
           icon: route.icon,
           children: handleMenu(route.children)
         };
       }
       return {
         label: <Link to={route.url!}>{route.label}</Link>,
-        key: route.url || route.label,
+        key: route.url,
         icon: route.icon
       };
     });
@@ -108,7 +130,7 @@ function useRouterMenu(menus: MenuItem[]) {
       if (route.url) {
         return {
           label: <Link to={route.url}>{route.label}</Link>,
-          key: route.url || route.label,
+          key: route.url,
           icon: route.icon
         };
       }
@@ -124,20 +146,11 @@ function useRouterMenu(menus: MenuItem[]) {
       }
       return {
         label: route.label,
-        key: route.url || route.label,
+        key: route.label,
         icon: route.icon
       };
     });
   }, [JSON.stringify(menus)]);
 }
 
-function LayoutMenu() {
-  return (
-    <Menu
-      style={{ height: "100%" }}
-      mode="inline"
-      items={useRouterMenu(menuLists)}
-      defaultOpenKeys={["sub2"]}
-    />
-  );
-}
+function useDefaultMenuPath(menus: MenuItem[], paths: PathType[]) {}

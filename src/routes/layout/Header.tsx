@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 export default function Header() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const signout = async () => {
-    await dispatch(logout());
+  const signout = () => {
+    dispatch(logout());
     // 退出登录回到不需要鉴权的首页
-    navigate("/", { replace: true });
+    navigate("/");
   };
 
   return (

@@ -27,3 +27,7 @@ export function authLogin() {
     );
   }, []);
 }
+
+export function useAutoLogout() {
+  console.log("auto-logout");
+}

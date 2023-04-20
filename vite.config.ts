@@ -21,6 +21,7 @@ export default defineConfig({
     outDir: "dist", //指定输出路径
     rollupOptions: {
       output: {
+        // 配置Rollup打包分块
         manualChunks(id) {
           if (id.includes("node_modules/react")) {
             return "React";

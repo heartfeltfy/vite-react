@@ -1,4 +1,3 @@
-import Footer from "./Layout/Footer";
-import Header from "./Layout/Header";
+import SkeletonLoading, { SkeletonCustom } from "./loading/SkeletonLoading";
 
-export { Footer, Header };
+export { SkeletonCustom, SkeletonLoading };
