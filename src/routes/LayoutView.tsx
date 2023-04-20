@@ -1,7 +1,7 @@
-import { Breadcrumb, Button, Layout, Menu, MenuProps } from "antd";
+import { Breadcrumb, Button, Layout, Menu } from "antd";
 import classes from "./LayoutView.module.scss";
 import { Footer, Header } from "@/components";
-import { Dispatch, Key, ReactNode, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useMemo, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
   HomeOutlined,

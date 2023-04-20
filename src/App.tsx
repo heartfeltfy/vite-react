@@ -4,11 +4,13 @@ import { RouterProvider } from "react-router-dom";
 import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "@/views/ErrorPage";
 import Goods from "@/views/goods/Goods";
-import Login from "./routes/auth/Login";
 import Root from "@/routes/Root";
-import Layout from "@/routes/LayoutView";
+import LayoutView from "@/routes/LayoutView";
 import Home from "./views/home/Home";
 import AuthProvider from "./routes/auth/AuthProvider";
+import { lazy } from "react";
+
+const Login = lazy(() => import("./routes/auth/Login"));
 
 export const router = createBrowserRouter([
   {
@@ -16,7 +18,7 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        element: <Layout />,
+        element: <LayoutView />,
         children: [
           { path: "/", element: <Home /> },
           {
