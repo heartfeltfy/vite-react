@@ -1,5 +1,5 @@
 import { Skeleton, Space, Spin } from "antd";
-import { Suspense, ReactNode } from "react";
+import { Suspense, ReactNode, CSSProperties } from "react";
 
 export default function SkeletonLoading({ children }: { children: ReactNode }) {
   return <Suspense fallback={<SkeletonCustom />}>{children}</Suspense>;
@@ -14,6 +14,12 @@ export const SkeletonCustom = () => {
   );
 };
 
+const SpinStyles: CSSProperties = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "100%"
+};
 export const GlobalLoading = ({ children }: { children: ReactNode }) => {
-  return <Suspense fallback={<Spin />}>{children}</Suspense>;
+  return <Suspense fallback={<Spin style={SpinStyles} />}>{children}</Suspense>;
 };

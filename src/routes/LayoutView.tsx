@@ -2,15 +2,16 @@ import { Breadcrumb, Button, Layout, Menu, MenuProps } from "antd";
 import classes from "./LayoutView.module.scss";
 import { Footer, Header } from "./index";
 import { Dispatch, ReactNode, SetStateAction, useMemo, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { MenuItem, MENU_LISTS } from "@/App";
+import { MenuItem, useAuthMenus } from "@/App";
 
 const { Sider, Content } = Layout;
 
 export default function LayoutView() {
   const [collapsed, setCollapsed] = useState(false);
-  const items: PathType[] = [];
+  const menus = useAuthMenus();
+  const items = useAuthMenusPath(menus);
   return (
     <Layout className={classes.layout_view}>
       <Header />
@@ -21,7 +22,7 @@ export default function LayoutView() {
           collapsedWidth={8 * 8}
           collapsed={collapsed}
         >
-          <LayoutMenu menus={MENU_LISTS} />
+          <LayoutMenu menus={menus} />
         </Sider>
         <Layout className={classes.content}>
           <LayoutBreadcrumb paths={items} collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -61,16 +62,48 @@ interface PathType {
   url: string;
 }
 
+function useAuthMenusPath(menus: MenuItem[]): PathType[] {
+  const { pathname } = useLocation();
+
+  function getCurrentTitle(menus: MenuItem[], toUrlTitle: string): string | null {
+    for (const menu of menus) {
+      // 如果当前路由
+      if (menu.url === toUrlTitle) {
+        return menu.label;
+      }
+      if (menu.children && menu.children.length > 0) {
+        return getCurrentTitle(menu.children, toUrlTitle);
+      }
+    }
+    return null;
+  }
+
+  return useMemo(() => {
+    // 首页
+    if (pathname === "/") return [{ url: "/", title: "首页" }];
+
+    const currentPath = pathname.split("/").filter(v => v);
+
+    return currentPath.map((path, index) => {
+      const url = `/${currentPath.slice(0, index + 1).join("/")}`;
+      const title = getCurrentTitle(menus, url) ?? path;
+
+      return { url, title };
+    });
+  }, [menus, pathname]);
+}
 // 处理面包屑组件可点击跳转
 function itemRender(paths: PathType[]) {
   return useMemo(() => {
-    return paths
-      .map(({ title }) => {
+    const nextItemRender = paths
+      .map(({ title, url }) => {
         return {
-          title: <Link to={title}>{title}</Link>
+          title: <Link to={url}>{title}</Link>
         };
       })
-      .concat([{ title: <Link to="/">首页</Link> }]);
+      .filter(v => v.title.props.to !== "/");
+
+    return [{ title: <Link to="/">首页</Link> }].concat(nextItemRender);
   }, [JSON.stringify(paths)]);
 }
 

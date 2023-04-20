@@ -4,10 +4,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface AuthInitialState {
   accessToken: string;
   username: string;
+  authorities: string[];
 }
 const initialState = {
   accessToken: "",
-  username: ""
+  username: "",
+  authorities: []
 } as AuthInitialState;
 
 export const authSlice = createSlice({
@@ -18,11 +20,13 @@ export const authSlice = createSlice({
     setAuth(state, action: PayloadAction<AuthInitialState>) {
       state.accessToken = action.payload.accessToken;
       state.username = action.payload.username;
+      state.authorities = action.payload.authorities;
     },
     // 清除权限信息
     clearAuth(state) {
       state.accessToken = "";
       state.username = "";
+      state.authorities = [];
     }
   }
 });
@@ -31,14 +35,14 @@ const USER_INFO = "auth";
 
 // 用户登录
 export const login = (userInfo: AuthInitialState) => {
-  return async (dispatch: AppDispatch) => {
+  return (dispatch: AppDispatch) => {
     dispatch(setAuth(userInfo));
     setStorage(userInfo);
   };
 };
 // 用户注销
 export const logout = () => {
-  return async (dispatch: AppDispatch) => {
+  return (dispatch: AppDispatch) => {
     clearStorage();
     dispatch(clearAuth());
   };

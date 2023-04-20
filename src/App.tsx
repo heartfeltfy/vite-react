@@ -7,9 +7,11 @@ import Root from "@/routes/Root";
 import LayoutView from "@/routes/LayoutView";
 import Home from "./views/home/Home";
 import AuthProvider from "./routes/auth/AuthProvider";
-import { ReactNode, lazy } from "react";
+import { ReactNode, lazy, useMemo } from "react";
 import { HomeOutlined, OrderedListOutlined } from "@ant-design/icons";
 import { GlobalLoading } from "./components";
+import { useAppSelector } from "./store-hooks";
+import { store } from "./store";
 
 const Login = lazy(() => import("./routes/auth/Login"));
 const User = lazy(() => import("./views/system/user/Users"));
@@ -100,5 +102,37 @@ export const router = createBrowserRouter([
 ]);
 
 export default function App() {
+  useAuthMenus();
   return <RouterProvider router={router} />;
 }
+
+export const useAuthMenus = () => {
+  const authorities = useAppSelector(state => state.auth.authorities);
+
+  function getAuthMenus(menus: MenuItem[]) {
+    const filterMenus: MenuItem[] = [];
+
+    for (const menu of menus) {
+      // 此菜单所有人可见，或者是当前角色拥有
+      if (!menu.auth || authorities.indexOf(menu.auth) !== -1) {
+        filterMenus.push(menu);
+        continue;
+      }
+
+      // 递归遍历其子菜单
+
+      if (menu.children && menu.children.length > 0) {
+        const submenu = getAuthMenus(menu.children);
+
+        if (submenu.length > 0) {
+          filterMenus.push({ ...menu, children: submenu });
+        }
+      }
+    }
+    return filterMenus;
+  }
+
+  return useMemo(() => {
+    return getAuthMenus(MENU_LISTS);
+  }, [JSON.stringify(authorities)]);
+};

@@ -25,14 +25,14 @@ export default function Login() {
       const userInfo = {
         accessToken,
         username,
-        auth: ["user"]
+        authorities: ["user"]
       };
 
       authSuccess(userInfo);
     });
   };
 
-  function authSuccess(data: { accessToken: string; username: string }) {
+  function authSuccess(data: { accessToken: string; username: string; authorities: string[] }) {
     navigate(from, { replace: true });
     dispatch(login(data));
   }
