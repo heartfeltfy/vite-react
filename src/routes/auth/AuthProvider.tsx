@@ -17,5 +17,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   if (!userinfo) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
+
   return <SkeletonLoading>{children}</SkeletonLoading>;
 }

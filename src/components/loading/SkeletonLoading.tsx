@@ -1,4 +1,4 @@
-import { Skeleton, Space } from "antd";
+import { Skeleton, Space, Spin } from "antd";
 import { Suspense, ReactNode } from "react";
 
 export default function SkeletonLoading({ children }: { children: ReactNode }) {
@@ -12,4 +12,8 @@ export const SkeletonCustom = () => {
       <Skeleton active title={false} paragraph={{ rows: 3 }} />
     </Space>
   );
+};
+
+export const GlobalLoading = ({ children }: { children: ReactNode }) => {
+  return <Suspense fallback={<Spin />}>{children}</Suspense>;
 };

@@ -9,6 +9,7 @@ import Home from "./views/home/Home";
 import AuthProvider from "./routes/auth/AuthProvider";
 import { ReactNode, lazy } from "react";
 import { HomeOutlined, OrderedListOutlined } from "@ant-design/icons";
+import { GlobalLoading } from "./components";
 
 const Login = lazy(() => import("./routes/auth/Login"));
 const User = lazy(() => import("./views/system/user/Users"));
@@ -86,7 +87,14 @@ export const router = createBrowserRouter([
         ]
       },
       // 登录组件
-      { path: "/login", element: <Login /> }
+      {
+        path: "/login",
+        element: (
+          <GlobalLoading>
+            <Login />
+          </GlobalLoading>
+        )
+      }
     ]
   }
 ]);
