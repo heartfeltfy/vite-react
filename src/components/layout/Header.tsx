@@ -1,16 +1,19 @@
 import { Link } from "react-router-dom";
 import { Button, Layout, Typography } from "antd";
-import { useAppDispatch } from "@/store-hooks";
+import { useAppDispatch, useAppSelector } from "@/store-hooks";
 import { logout } from "@/routes/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const authorities = useAppSelector(state => state.auth.authorities);
+  const online = authorities && authorities.length > 0;
+  // 主席奥
   const signout = () => {
-    dispatch(logout());
+    online && dispatch(logout());
     // 退出登录回到不需要鉴权的首页
-    navigate("/");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -32,7 +35,7 @@ export default function Header() {
         </Typography.Title>
       </Link>
       <Button type="primary" onClick={signout}>
-        退出登录
+        {online ? "注销" : "登录"}
       </Button>
     </Layout.Header>
   );

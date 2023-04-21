@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Layout, Menu, MenuProps } from "antd";
 import classes from "./LayoutView.module.scss";
 import { Footer, Header } from "./index";
-import { Dispatch, ReactNode, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { MenuItem, useAuthMenus } from "@/App";
@@ -22,7 +22,7 @@ export default function LayoutView() {
           collapsedWidth={8 * 8}
           collapsed={collapsed}
         >
-          <LayoutMenu menus={menus} />
+          <LayoutMenu menus={menus} paths={items} />
         </Sider>
         <Layout className={classes.content}>
           <LayoutBreadcrumb paths={items} collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -109,9 +109,10 @@ function itemRender(paths: PathType[]) {
 
 // 菜单组件
 
-function LayoutMenu({ menus }: { menus: MenuItem[] }) {
-  const selectedKeys = ["用户管理", "/user"];
-  const [openKeys, setOpenKeys] = useState<string[]>(selectedKeys);
+function LayoutMenu({ menus, paths }: { menus: MenuItem[]; paths: PathType[] }) {
+  const selectedKeys = useDefaultMenuPath(menus, paths);
+  const { openKeys, setOpenKeys } = useOpenKeys(selectedKeys);
+
   const items = useRouterMenu(menus);
 
   // 默认展开一个
@@ -185,5 +186,48 @@ function useRouterMenu(menus: MenuItem[]) {
     });
   }, [JSON.stringify(menus)]);
 }
+// 处理默认展开菜单
+function useOpenKeys(selectedKeys: string[]) {
+  const [openKeys, setOpenKeys] = useState(selectedKeys);
 
-function useDefaultMenuPath(menus: MenuItem[], paths: PathType[]) {}
+  useEffect(() => {
+    setOpenKeys(prev => {
+      if (prev.length < selectedKeys.length) {
+        return selectedKeys;
+      }
+      return prev;
+    });
+  }, [selectedKeys]);
+
+  return { openKeys, setOpenKeys };
+}
+function useDefaultMenuPath(menus: MenuItem[], paths: PathType[]) {
+  // 返回面包屑组件的最后一个元素
+  const pathEnd = paths.at(paths.length - 1);
+
+  // 获取应该选中的菜单
+  function getSelectKeys(menus: MenuItem[]) {
+    const selectedKeys: string[] = [];
+
+    for (const menu of menus) {
+      if (menu.url && menu.url === pathEnd?.url) {
+        selectedKeys.push(menu.url);
+        continue;
+      }
+
+      if (menu.children && menu.children.length > 0) {
+        const subSelectedKeys = getSelectKeys(menu.children);
+
+        if (subSelectedKeys.length > 0) {
+          selectedKeys.push(menu.label, ...subSelectedKeys);
+        }
+      }
+    }
+
+    return selectedKeys;
+  }
+
+  return useMemo(() => {
+    return getSelectKeys(menus);
+  }, [menus, pathEnd]);
+}

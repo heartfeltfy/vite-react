@@ -21,11 +21,11 @@ import App from "./App";
 NProgress.configure({ showSpinner: false });
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <ConfigProvider locale={locale}>
-      <App />
-    </ConfigProvider>
-  </Provider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
+      <ConfigProvider locale={locale}>
+        <App />
+      </ConfigProvider>
+    </Provider>
+  </React.StrictMode>
 );
