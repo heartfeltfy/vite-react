@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
-export default function AddNewUsers() {
+export default function AddUserForm() {
   const navigate = useNavigate();
   return (
     <>

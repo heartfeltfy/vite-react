@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { useAppSelector } from "@/store-hooks";
 import { Navigate, useLocation } from "react-router-dom";
-import { getStorage } from "./authSlice";
+import { getStorage } from "./auth-slice";
 import SkeletonLoading from "@/components/loading/SkeletonLoading";
 
 // 鉴权组件

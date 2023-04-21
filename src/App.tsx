@@ -8,15 +8,15 @@ import LayoutView from "@/routes/LayoutView";
 import Home from "./views/home/Home";
 import AuthProvider from "./routes/auth/AuthProvider";
 import { ReactNode, lazy, useMemo } from "react";
-import { HomeOutlined, OrderedListOutlined } from "@ant-design/icons";
+import { HomeOutlined, OrderedListOutlined, EditOutlined } from "@ant-design/icons";
 import { GlobalLoading } from "./components";
 import { useAppSelector } from "./store-hooks";
-import { store } from "./store";
 
 const Login = lazy(() => import("./routes/auth/Login"));
 const User = lazy(() => import("./views/system/user/Users"));
 const Roles = lazy(() => import("./views/system/role/Roles"));
-const AddNewUsers = lazy(() => import("./views/system/user/AddNewUsers"));
+const AddNewUsers = lazy(() => import("./views/system/user/AddUserForm"));
+const Posts = lazy(() => import("./views/posts/Posts"));
 
 export interface MenuItem {
   label: string;
@@ -31,6 +31,11 @@ export const MENU_LISTS: MenuItem[] = [
     label: "首页",
     url: "/",
     icon: <HomeOutlined />
+  },
+  {
+    label: "文章管理",
+    url: "/posts",
+    icon: <EditOutlined />
   },
   {
     label: "系统设置",
@@ -62,6 +67,14 @@ export const router = createBrowserRouter([
         element: <LayoutView />,
         children: [
           { path: "/", element: <Home /> },
+          {
+            path: "posts",
+            element: (
+              <AuthProvider>
+                <Posts />
+              </AuthProvider>
+            )
+          },
           {
             path: "user",
             element: (

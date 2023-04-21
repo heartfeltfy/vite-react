@@ -1,4 +1,4 @@
-import { AppDispatch } from "./../../store";
+import { AppDispatch } from "../../store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface AuthInitialState {

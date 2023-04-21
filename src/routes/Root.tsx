@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/store-hooks";
-import { durableInfo } from "@/routes/auth/authSlice";
+import { durableInfo } from "@/routes/auth/auth-slice";
 
 export default function Root() {
   authLogin();

@@ -3,7 +3,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch } from "@/store-hooks";
-import { login } from "./authSlice";
+import { login } from "./auth-slice";
 import { useRequest } from "@/hooks/useRequest";
 import { getAccessToken } from "@/api/auth";
 

@@ -1,12 +1,26 @@
 import { Breadcrumb, Button, Layout, Menu, MenuProps } from "antd";
 import classes from "./LayoutView.module.scss";
 import { Footer, Header } from "./index";
-import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+  CSSProperties
+} from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { MenuItem, useAuthMenus } from "@/App";
 
 const { Sider, Content } = Layout;
+
+const contentCss: CSSProperties = {
+  backgroundColor: "#fff",
+  padding: "20px",
+  overflowY: "auto"
+};
 
 export default function LayoutView() {
   const [collapsed, setCollapsed] = useState(false);
@@ -26,7 +40,7 @@ export default function LayoutView() {
         </Sider>
         <Layout className={classes.content}>
           <LayoutBreadcrumb paths={items} collapsed={collapsed} setCollapsed={setCollapsed} />
-          <Content style={{ backgroundColor: "#fff", padding: "20px" }}>
+          <Content style={contentCss}>
             <Outlet />
           </Content>
           <Footer />

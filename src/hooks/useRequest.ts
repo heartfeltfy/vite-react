@@ -5,11 +5,11 @@ import { AxiosError } from "axios";
 import { baseURL } from "@/utils/http";
 
 import { store } from "@/store";
-import { logout } from "@/routes/auth/authSlice";
+import { logout } from "@/routes/auth/auth-slice";
 
 export interface RequestConfig {
   url: string;
-  method: "get" | "post" | "put" | "delete";
+  method: "get" | "post" | "put" | "delete" | "GET" | "POST" | "PUT" | "DELETE";
   data?: object;
   params?: object;
 }
@@ -27,7 +27,7 @@ export const useRequest = () => {
 
       instance({ url, method, data, params, signal: controller.signal })
         .then(result => {
-          callback(result.data);
+          callback && callback(result.data);
         })
         .catch(error => {
           if (controller.signal.aborted) return;
@@ -36,14 +36,7 @@ export const useRequest = () => {
           // 鉴权失效
           authenticationFailed(errorConfig);
 
-          const errorData: any = errorConfig.response?.data;
-
-          if (errorData && Object.keys(errorData).length > 0) {
-            setError(errorData.error || errorData.message || JSON.stringify(errorData));
-            return;
-          }
-
-          setError(errorConfig.message);
+          setError(getErrorMessage(errorConfig));
         })
         .finally(() => setLoading(false));
       return controller;
@@ -63,4 +56,12 @@ function authenticationFailed(axios: AxiosError) {
   if (status && isApiRequest) {
     store.dispatch(logout());
   }
+}
+
+export function getErrorMessage(error: AxiosError) {
+  const errorData: any = error.response?.data;
+  if (errorData && Object.keys(errorData).length > 0) {
+    return errorData.error || errorData.message || JSON.stringify(errorData);
+  }
+  return error.message;
 }

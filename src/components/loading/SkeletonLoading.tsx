@@ -14,7 +14,7 @@ export const SkeletonCustom = () => {
   );
 };
 
-const SpinStyles: CSSProperties = {
+export const SpinStyles: CSSProperties = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",

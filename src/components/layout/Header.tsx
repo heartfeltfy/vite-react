@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button, Layout, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "@/store-hooks";
-import { logout } from "@/routes/auth/authSlice";
+import { logout } from "@/routes/auth/auth-slice";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
