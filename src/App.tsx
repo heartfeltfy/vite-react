@@ -1,6 +1,6 @@
 import "./App.css";
 // 引入react-router-dom
-import { RouterProvider } from "react-router-dom";
+import { RouteObject, RouterProvider } from "react-router-dom";
 import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "@/views/ErrorPage";
 import Root from "@/routes/Root";
@@ -58,7 +58,7 @@ export const MENU_LISTS: MenuItem[] = [
   }
 ];
 
-export const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     element: <Root />,
     errorElement: <ErrorPage />,
@@ -112,7 +112,9 @@ export const router = createBrowserRouter([
       }
     ]
   }
-]);
+];
+
+export const router = createBrowserRouter(routes);
 
 export default function App() {
   useAuthMenus();

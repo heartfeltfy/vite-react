@@ -82,6 +82,7 @@ function useAuthMenusPath(menus: MenuItem[]): PathType[] {
   function getCurrentTitle(menus: MenuItem[], toUrlTitle: string): string | null {
     for (const menu of menus) {
       // 如果当前路由
+
       if (menu.url === toUrlTitle) {
         return menu.label;
       }
@@ -97,6 +98,7 @@ function useAuthMenusPath(menus: MenuItem[]): PathType[] {
     if (pathname === "/") return [{ url: "/", title: "首页" }];
 
     const currentPath = pathname.split("/").filter(v => v);
+    // console.log(currentPath);
 
     return currentPath.map((path, index) => {
       const url = `/${currentPath.slice(0, index + 1).join("/")}`;

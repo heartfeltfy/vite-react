@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store-hooks";
 import { useEffect } from "react";
 import { getPostsHttp, reset } from "./posts-slice";
 import { Spin } from "antd";
-import { SpinStyles } from "@/components/loading/SkeletonLoading";
+import { SpinStyles } from "@/components";
 
 export default function Posts() {
   const dispatch = useAppDispatch();
