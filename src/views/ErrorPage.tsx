@@ -1,4 +1,6 @@
 import { useRouteError } from "react-router-dom";
+import { Header, Footer } from "@/routes";
+import { Layout, Typography } from "antd";
 
 interface ErrorResponse {
   data: any;
@@ -16,7 +18,23 @@ export default function ErrorPage() {
   console.log(error);
 
   if (errorCheck(error)) {
-    return <div className="ErrorPage">{error.statusText || error.message}</div>;
+    return (
+      <Layout style={{ minHeight: "100vh" }}>
+        <Header />
+        <Layout.Content
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Typography.Title level={2}>
+            <p>404页面</p>
+          </Typography.Title>
+        </Layout.Content>
+        <Footer />
+      </Layout>
+    );
   }
   return <></>;
 }

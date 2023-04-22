@@ -7,7 +7,6 @@ import { SpinStyles } from "@/components";
 export default function Posts() {
   const dispatch = useAppDispatch();
   const posts = useAppSelector(state => state.posts.posts);
-  const loading = useAppSelector(state => state.ui.loading);
 
   useEffect(() => {
     const controller = dispatch(getPostsHttp({ pageNumber: 1, pageSize: 150 }));
@@ -19,7 +18,7 @@ export default function Posts() {
   }, []);
   return (
     <>
-      {!loading ? (
+      {posts.length > 0 ? (
         posts.map(v => {
           return <p key={v.id}>{v.body}</p>;
         })

@@ -35,6 +35,7 @@ export const MENU_LISTS: MenuItem[] = [
   {
     label: "文章管理",
     url: "/posts",
+    auth: "posts",
     icon: <EditOutlined />
   },
   {
@@ -60,17 +61,18 @@ export const MENU_LISTS: MenuItem[] = [
 
 const routes: RouteObject[] = [
   {
+    path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
     children: [
       {
         element: <LayoutView />,
         children: [
-          { path: "/", element: <Home /> },
+          { index: true, element: <Home /> },
           {
             path: "posts",
             element: (
-              <AuthProvider>
+              <AuthProvider authority="posts">
                 <Posts />
               </AuthProvider>
             )
@@ -78,7 +80,7 @@ const routes: RouteObject[] = [
           {
             path: "user",
             element: (
-              <AuthProvider>
+              <AuthProvider authority="user">
                 <User />
               </AuthProvider>
             )
@@ -86,7 +88,7 @@ const routes: RouteObject[] = [
           {
             path: "user/add",
             element: (
-              <AuthProvider>
+              <AuthProvider authority="post_add">
                 <AddNewUsers />
               </AuthProvider>
             )
@@ -94,7 +96,7 @@ const routes: RouteObject[] = [
           {
             path: "role",
             element: (
-              <AuthProvider>
+              <AuthProvider authority="role">
                 <Roles />
               </AuthProvider>
             )
