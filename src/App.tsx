@@ -11,7 +11,6 @@ import { ReactNode, lazy, useMemo } from "react";
 import { HomeOutlined, OrderedListOutlined, EditOutlined } from "@ant-design/icons";
 import { GlobalLoading } from "./components";
 import { useAppSelector } from "./store-hooks";
-import { getStorage } from "./routes/auth/auth-slice";
 
 const Login = lazy(() => import("./routes/auth/Login"));
 const User = lazy(() => import("./views/system/user/Users"));
@@ -56,6 +55,25 @@ export const MENU_LISTS: MenuItem[] = [
         auth: "role",
         url: "/role"
       }
+    ]
+  }
+];
+export interface UserAuthType {
+  auth: string;
+  children?: UserAuthType[];
+}
+
+// 全部权限列表
+export const userAuth: UserAuthType[] = [
+  { auth: "posts" },
+  {
+    auth: "setting",
+    children: [
+      {
+        auth: "user",
+        children: [{ auth: "post_add" }]
+      },
+      { auth: "role" }
     ]
   }
 ];

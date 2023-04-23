@@ -43,7 +43,10 @@ function itemRender(paths: PathType[]) {
   }, [JSON.stringify(paths)]);
 }
 
-const breadcrumbData: { [key: string]: string } = {
+export const breadcrumbData: { [key: string]: string } = {
+  "/": "首页",
+  "/posts": "文章管理",
+  "/user": "用户管理",
   "/user/add": "新增用户"
 };
 
