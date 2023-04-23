@@ -72,7 +72,6 @@ function clearStorage() {
 export function getStorage(): AuthInitialState | null {
   const userInfo = localStorage.getItem(USER_INFO);
   if (!userInfo) return null;
-
   return JSON.parse(userInfo);
 }
 export const { setAuth, clearAuth } = authSlice.actions;

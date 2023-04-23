@@ -1,5 +1,5 @@
 import { useRouteError } from "react-router-dom";
-import { Header, Footer } from "@/routes";
+import { Header, Footer } from "@/components";
 import { Layout, Typography } from "antd";
 
 interface ErrorResponse {

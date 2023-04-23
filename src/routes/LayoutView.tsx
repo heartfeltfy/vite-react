@@ -1,17 +1,8 @@
-import { Breadcrumb, Button, Layout, Menu, MenuProps } from "antd";
+import { Layout, Menu, MenuProps } from "antd";
 import classes from "./LayoutView.module.scss";
-import { Footer, Header } from "./index";
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-  CSSProperties
-} from "react";
+import { Footer, Header, LayoutBreadcrumb, PathType } from "@/components";
+import { ReactNode, useEffect, useMemo, useState, CSSProperties } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { MenuItem, useAuthMenus } from "@/App";
 
 const { Sider, Content } = Layout;
@@ -50,32 +41,7 @@ export default function LayoutView() {
   );
 }
 
-// 面包屑组件
-
-function LayoutBreadcrumb({
-  collapsed,
-  setCollapsed,
-  paths
-}: {
-  collapsed: boolean;
-  setCollapsed: Dispatch<SetStateAction<boolean>>;
-  paths: PathType[];
-}) {
-  const items = itemRender(paths);
-  return (
-    <div className="flex align-center" style={{ marginBottom: 20, gap: "1em" }}>
-      <Button type="primary" onClick={() => setCollapsed(!collapsed)}>
-        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      </Button>
-      <Breadcrumb items={items}></Breadcrumb>
-    </div>
-  );
-}
-interface PathType {
-  title: string;
-  url: string;
-}
-
+// 菜单跳转
 function useAuthMenusPath(menus: MenuItem[]): PathType[] {
   const { pathname } = useLocation();
 
@@ -108,23 +74,8 @@ function useAuthMenusPath(menus: MenuItem[]): PathType[] {
     });
   }, [menus, pathname]);
 }
-// 处理面包屑组件可点击跳转
-function itemRender(paths: PathType[]) {
-  return useMemo(() => {
-    const nextItemRender = paths
-      .map(({ title, url }) => {
-        return {
-          title: <Link to={url}>{title}</Link>
-        };
-      })
-      .filter(v => v.title.props.to !== "/");
-
-    return [{ title: <Link to="/">首页</Link> }].concat(nextItemRender);
-  }, [JSON.stringify(paths)]);
-}
 
 // 菜单组件
-
 function LayoutMenu({ menus, paths }: { menus: MenuItem[]; paths: PathType[] }) {
   const selectedKeys = useDefaultMenuPath(menus, paths);
   const { openKeys, setOpenKeys } = useOpenKeys(selectedKeys);

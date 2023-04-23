@@ -16,16 +16,16 @@ export default function AuthProvider({
 }) {
   const getUserInfo = getStorage();
 
-  const username = getUserInfo && getUserInfo.username;
+  const accessToken = getUserInfo && getUserInfo.accessToken;
 
-  const userinfo = useAppSelector(state => state.auth.username) || username;
+  const userInfo = useAppSelector(state => state.auth.accessToken) || accessToken;
 
   const location = useLocation();
 
   const menus = useAuthMenus();
 
   // 未登录返回登录页面
-  if (!userinfo) {
+  if (!userInfo) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 

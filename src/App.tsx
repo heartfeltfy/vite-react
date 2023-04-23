@@ -11,6 +11,7 @@ import { ReactNode, lazy, useMemo } from "react";
 import { HomeOutlined, OrderedListOutlined, EditOutlined } from "@ant-design/icons";
 import { GlobalLoading } from "./components";
 import { useAppSelector } from "./store-hooks";
+import { getStorage } from "./routes/auth/auth-slice";
 
 const Login = lazy(() => import("./routes/auth/Login"));
 const User = lazy(() => import("./views/system/user/Users"));
@@ -119,12 +120,11 @@ const routes: RouteObject[] = [
 export const router = createBrowserRouter(routes);
 
 export default function App() {
-  useAuthMenus();
   return <RouterProvider router={router} />;
 }
 
 export const useAuthMenus = () => {
-  const authorities = useAppSelector(state => state.auth.authorities);
+  const authorities = useAppSelector(state => state.auth.authorities) || [];
 
   function getAuthMenus(menus: MenuItem[]) {
     const filterMenus: MenuItem[] = [];
@@ -137,7 +137,6 @@ export const useAuthMenus = () => {
       }
 
       // 递归遍历其子菜单
-
       if (menu.children && menu.children.length > 0) {
         const submenu = getAuthMenus(menu.children);
 
