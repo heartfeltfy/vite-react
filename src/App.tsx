@@ -1,14 +1,13 @@
 import "./App.css";
 // 引入react-router-dom
-import { RouteObject, RouterProvider } from "react-router-dom";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
 import ErrorPage from "@/views/ErrorPage";
 import Root from "@/routes/Root";
 import LayoutView from "@/routes/LayoutView";
 import Home from "./views/home/Home";
 import AuthProvider from "./routes/auth/AuthProvider";
-import { ReactNode, lazy, useMemo } from "react";
-import { HomeOutlined, OrderedListOutlined, EditOutlined } from "@ant-design/icons";
+import { lazy, ReactNode, useMemo } from "react";
+import { EditOutlined, HomeOutlined, OrderedListOutlined } from "@ant-design/icons";
 import { GlobalLoading } from "./components";
 import { useAppSelector } from "./store-hooks";
 
@@ -25,6 +24,7 @@ export interface MenuItem {
   children?: MenuItem[];
   auth?: string;
 }
+
 // 路由列表
 export const MENU_LISTS: MenuItem[] = [
   {
@@ -55,25 +55,6 @@ export const MENU_LISTS: MenuItem[] = [
         auth: "role",
         url: "/role"
       }
-    ]
-  }
-];
-export interface UserAuthType {
-  auth: string;
-  children?: UserAuthType[];
-}
-
-// 全部权限列表
-export const userAuth: UserAuthType[] = [
-  { auth: "posts" },
-  {
-    auth: "setting",
-    children: [
-      {
-        auth: "user",
-        children: [{ auth: "post_add" }]
-      },
-      { auth: "role" }
     ]
   }
 ];

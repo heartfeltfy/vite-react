@@ -25,7 +25,7 @@ export default function Login() {
       const userInfo = {
         accessToken,
         username,
-        authorities: ["user", "posts"]
+        authorities: ["setting", "posts"]
       };
 
       authSuccess(userInfo);

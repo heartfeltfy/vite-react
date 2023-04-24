@@ -33,6 +33,7 @@ export default function Posts() {
           current: pageNumber,
           pageSize: pageSize
         }}
+        scroll={{ y: 500 }}
         onChange={pagination =>
           dispatch(
             getPostsHttp({ pageNumber: pagination.current!, pageSize: pagination.pageSize! })
