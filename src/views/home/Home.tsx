@@ -1,3 +1,4 @@
+import classes from "./Home.module.scss";
 export default function Home() {
-  return <div className="Home">Home</div>;
+  return <div className={classes.homeColor}>Home</div>;
 }
