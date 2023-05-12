@@ -1,19 +1,6 @@
-import SkeletonLoading, {
-  SkeletonCustom,
-  GlobalLoading,
-  SpinStyles
-} from "./loading/SkeletonLoading";
-import Header from "./layout/Header";
-import Footer from "./layout/Footer";
-import LayoutBreadcrumb, { PathType } from "./layout/LayoutBreadcrumd";
+import HeaderView from "./layout/HeaderView";
+import FooterView from "./layout/FooterView";
+import SuspenseLoading, { SkeletonLoading, FullLoading } from "./loading/SuspenseLoading";
+import RouterError from "./error/RouteError";
 
-export {
-  SkeletonCustom,
-  SkeletonLoading,
-  Header,
-  Footer,
-  GlobalLoading,
-  LayoutBreadcrumb,
-  SpinStyles
-};
-export type { PathType };
+export { HeaderView, FooterView, SuspenseLoading, SkeletonLoading, FullLoading, RouterError };

@@ -1,153 +1,96 @@
-import "./App.css";
-// 引入react-router-dom
-import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
-import ErrorPage from "@/views/ErrorPage";
-import Root from "@/routes/Root";
-import LayoutView from "@/routes/LayoutView";
-import Home from "./views/home/Home";
+import { lazy } from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Root from "./routes/Root";
+import ErrorPage from "./pages/error/ErrorPage";
+
+import { SuspenseLoading, FullLoading } from "@/components";
+
+import LayoutView from "./routes/LayoutView";
 import AuthProvider from "./routes/auth/AuthProvider";
-import { lazy, ReactNode, useMemo } from "react";
-import { EditOutlined, HomeOutlined, OrderedListOutlined } from "@ant-design/icons";
-import { GlobalLoading } from "./components";
-import { useAppSelector } from "./store-hooks";
 
-const Login = lazy(() => import("./routes/auth/Login"));
-const User = lazy(() => import("./views/system/user/Users"));
-const Roles = lazy(() => import("./views/system/role/Roles"));
-const AddNewUsers = lazy(() => import("./views/system/user/AddUserForm"));
-const Posts = lazy(() => import("./views/posts/Posts"));
+const Login = lazy(() => import("@/routes/auth/Login"));
+const PowerPanel = lazy(() => import("@/pages/panel/power/PowerPanel"));
+const PowerSwitch = lazy(() => import("@/pages/device/power/PowerSwitch"));
+const Court = lazy(() => import("@/pages/court/Court"));
+const User = lazy(() => import("@/pages/system/user/User"));
+const Role = lazy(() => import("@/pages/system/role/Role"));
+const Log = lazy(() => import("@/pages/log/Log"));
 
-export interface MenuItem {
-  label: string;
-  url?: string;
-  icon?: ReactNode;
-  children?: MenuItem[];
-  auth?: string;
-}
-
-// 路由列表
-export const MENU_LISTS: MenuItem[] = [
-  {
-    label: "首页",
-    url: "/",
-    icon: <HomeOutlined />
-  },
-  {
-    label: "文章管理",
-    url: "/posts",
-    auth: "posts",
-    icon: <EditOutlined />
-  },
-  {
-    label: "系统设置",
-    icon: <OrderedListOutlined />,
-    auth: "setting",
-    children: [
-      {
-        label: "用户管理",
-        icon: <OrderedListOutlined />,
-        auth: "user",
-        url: "/user"
-      },
-      {
-        label: "角色管理",
-        icon: <OrderedListOutlined />,
-        auth: "role",
-        url: "/role"
-      }
-    ]
-  }
-];
-
-const routes: RouteObject[] = [
+const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <ErrorPage />,
+    errorElement: (
+      <SuspenseLoading>
+        <ErrorPage />
+      </SuspenseLoading>
+    ),
     children: [
+      {
+        path: "login",
+        element: (
+          <FullLoading>
+            <Login />
+          </FullLoading>
+        )
+      },
       {
         element: <LayoutView />,
         children: [
-          { index: true, element: <Home /> },
           {
-            path: "posts",
+            index: true,
             element: (
-              <AuthProvider authority="posts">
-                <Posts />
+              <AuthProvider authority="power-penal">
+                <PowerPanel />
+              </AuthProvider>
+            )
+          },
+          {
+            path: "power-switch",
+            element: (
+              <AuthProvider authority="power-switch">
+                <PowerSwitch />
+              </AuthProvider>
+            )
+          },
+          {
+            path: "court",
+            element: (
+              <AuthProvider>
+                <Court />
               </AuthProvider>
             )
           },
           {
             path: "user",
             element: (
-              <AuthProvider authority="user">
+              <AuthProvider>
                 <User />
-              </AuthProvider>
-            )
-          },
-          {
-            path: "user/add",
-            element: (
-              <AuthProvider authority="post_add">
-                <AddNewUsers />
               </AuthProvider>
             )
           },
           {
             path: "role",
             element: (
-              <AuthProvider authority="role">
-                <Roles />
+              <AuthProvider>
+                <Role />
+              </AuthProvider>
+            )
+          },
+          {
+            path: "log",
+            element: (
+              <AuthProvider>
+                <Log />
               </AuthProvider>
             )
           }
         ]
-      },
-      // 登录组件
-      {
-        path: "/login",
-        element: (
-          <GlobalLoading>
-            <Login />
-          </GlobalLoading>
-        )
       }
     ]
   }
-];
-
-export const router = createBrowserRouter(routes);
+]);
 
 export default function App() {
   return <RouterProvider router={router} />;
 }
-
-export const useAuthMenus = () => {
-  const authorities = useAppSelector(state => state.auth.authorities) || [];
-
-  function getAuthMenus(menus: MenuItem[]) {
-    const filterMenus: MenuItem[] = [];
-
-    for (const menu of menus) {
-      // 此菜单所有人可见，或者是当前角色拥有
-      if (!menu.auth || authorities.indexOf(menu.auth) !== -1) {
-        filterMenus.push(menu);
-        continue;
-      }
-
-      // 递归遍历其子菜单
-      if (menu.children && menu.children.length > 0) {
-        const submenu = getAuthMenus(menu.children);
-
-        if (submenu.length > 0) {
-          filterMenus.push({ ...menu, children: submenu });
-        }
-      }
-    }
-    return filterMenus;
-  }
-
-  return useMemo(() => {
-    return getAuthMenus(MENU_LISTS);
-  }, [JSON.stringify(authorities)]);
-};

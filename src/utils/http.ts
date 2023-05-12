@@ -1,8 +1,9 @@
+import { store } from "@/store/store";
 import axios from "axios";
-import NProgress from "nprogress";
-import { store } from "../store";
 
-export const baseURL = window?._CONFIG?.baseURL || window.location.origin;
+import NProgress from "nprogress";
+
+export const baseURL = window._config.baseUrl || window.location.origin;
 
 export const instance = axios.create({
   timeout: 10_000,
@@ -10,28 +11,27 @@ export const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  config => {
+  (config) => {
     NProgress.start();
     // 添加 Authorization 以验证用户身份
     const { accessToken } = store.getState().auth;
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
-
     return config;
   },
-  error => {
+  (error) => {
     NProgress.done();
     return Promise.reject(error);
   }
 );
 
 instance.interceptors.response.use(
-  response => {
+  (response) => {
     NProgress.done();
     return response;
   },
-  error => {
+  (error) => {
     NProgress.done();
     return Promise.reject(error);
   }

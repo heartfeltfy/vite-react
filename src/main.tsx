@@ -1,32 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-
 import { Provider } from "react-redux";
-// react-redux  仓库
-import { store } from "./store";
+import { store } from "@/store/store.ts";
 
-import "dayjs/locale/zh-cn";
-import locale from "antd/locale/zh_CN";
-import { ConfigProvider } from "antd";
+import App from "./App.tsx";
 
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
+import AndDesign from "./AntDesign.tsx";
 
-// 引入css样式
-import "antd/dist/reset.css";
-import "./index.css";
-import "./styles/flex.scss";
-
-import App from "./App";
-
-NProgress.configure({ showSpinner: false });
+import "./index.scss";
+import "./nprogress.ts";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <ConfigProvider locale={locale}>
+      <AndDesign>
         <App />
-      </ConfigProvider>
+      </AndDesign>
     </Provider>
   </React.StrictMode>
 );

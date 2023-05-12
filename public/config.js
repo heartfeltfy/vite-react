@@ -1,3 +1,3 @@
-window._CONFIG = {
-  baseURL: "https://dummyjson.com"
+window._config = {
+  baseUrl: "https://dummyjson.com"
 };

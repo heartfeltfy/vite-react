@@ -1,17 +1,21 @@
 import { RequestConfig } from "@/hooks/useRequest";
 
-export const getAccessToken = (data: { username: string; password: string }): RequestConfig => {
+// 获取token
+export const getAccessToken = (data: { password: string; username: string }): RequestConfig => {
   return {
     method: "post",
     url: "/auth/login",
     data
   };
 };
-
-// 获取列表
-export const getProducts = (): RequestConfig => {
+// 刷新token
+export const updateAccessToken = (refreshToken: string): RequestConfig => {
   return {
-    method: "get",
-    url: "/products"
+    method: "post",
+    url: "/auth/login",
+    headers: {
+      Authorization: `Bearer ${refreshToken}`
+    },
+    data: { password: "0lelplR", username: "kminchelle" }
   };
 };

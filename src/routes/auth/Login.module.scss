@@ -1,23 +1,20 @@
-.Login {
-  min-height: 100%;
-  background-color: #f1f5f9;
-  .Login_container {
-    width: 100%;
-    max-width: 24em;
-    background-color: #fff;
-    border-radius: 10px;
-    border: 1px solid #e6e7e9;
+.login {
+  min-height: 100vh;
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .body {
-      padding: 1.5em;
-      h2 {
-        text-align: center;
-        margin-bottom: 1em;
-      }
-      .login_input {
+      padding: 1.5em 1.5em 0;
+      background-color: #fff;
+      max-width: 27em;
+      border-radius: 10px;
+      border: 1px solid #e6e7e9;
+      .login__form_input {
         padding: 6.5px 11px;
         font-size: 16px;
       }
-      .login_form_button {
+      .login__form_button {
         width: 100%;
         font-size: 16px;
         height: 40px;

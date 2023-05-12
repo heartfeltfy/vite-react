@@ -1,132 +1,81 @@
+import { Key, ReactNode, useEffect, useMemo, useState } from "react";
+import { FooterView, HeaderView } from "@/components";
 import { Layout, Menu, MenuProps } from "antd";
-import classes from "./LayoutView.module.scss";
-import { Footer, Header, LayoutBreadcrumb, PathType } from "@/components";
-import { ReactNode, useEffect, useMemo, useState, CSSProperties } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { MenuItem, useAuthMenus } from "@/App";
-
-const { Sider, Content } = Layout;
-
-const contentCss: CSSProperties = {
-  backgroundColor: "#fff",
-  padding: "20px",
-  overflowY: "auto"
-};
+import styles from "./layout.module.scss";
+import { MenuItem, useAuthMenu } from "@/menu-item";
 
 export default function LayoutView() {
-  const [collapsed, setCollapsed] = useState(false);
-  const menus = useAuthMenus();
-  const items = useAuthMenusPath(menus);
+  const menus = useAuthMenu();
+
   return (
-    <Layout className={classes.layout_view}>
-      <Header />
-      <Layout className={classes.layout_section} hasSider>
-        <Sider
-          className={classes.sider}
-          width={200 + 8 * 6}
-          collapsedWidth={8 * 8}
-          collapsed={collapsed}
-        >
-          <LayoutMenu menus={menus} paths={items} />
-        </Sider>
-        <Layout className={classes.content}>
-          <LayoutBreadcrumb paths={items} collapsed={collapsed} setCollapsed={setCollapsed} />
-          <Content style={contentCss}>
+    <Layout className={styles.layout}>
+      <HeaderView />
+      <Layout className={styles.layout__main} hasSider>
+        <Layout.Sider width={200 + 8 * 6} collapsedWidth={8 * 8} className={styles.section__sider}>
+          <LayoutMenu menus={menus} />
+        </Layout.Sider>
+        <Layout className={styles.section__section}>
+          <Layout.Content
+            style={{
+              backgroundColor: "#fff",
+              padding: "20px",
+              overflowY: "auto"
+            }}
+          >
             <Outlet />
-          </Content>
-          <Footer />
+          </Layout.Content>
+          <FooterView />
         </Layout>
       </Layout>
     </Layout>
   );
 }
-
-// 菜单跳转
-function useAuthMenusPath(menus: MenuItem[]): PathType[] {
-  const { pathname } = useLocation();
-
-  function getCurrentTitle(menus: MenuItem[], toUrlTitle: string): string | null {
-    for (const menu of menus) {
-      // 如果当前路由
-
-      if (menu.url === toUrlTitle) {
-        return menu.label;
-      }
-      if (menu.children && menu.children.length > 0) {
-        return getCurrentTitle(menu.children, toUrlTitle);
-      }
-    }
-    return null;
-  }
-
-  return useMemo(() => {
-    // 首页
-    if (pathname === "/") return [{ url: "/", title: "首页" }];
-
-    const currentPath = pathname.split("/").filter(v => v);
-    // console.log(currentPath);
-
-    return currentPath.map((path, index) => {
-      const url = `/${currentPath.slice(0, index + 1).join("/")}`;
-      const title = getCurrentTitle(menus, url) ?? path;
-
-      return { url, title };
-    });
-  }, [menus, pathname]);
-}
-
-// 菜单组件
-function LayoutMenu({ menus, paths }: { menus: MenuItem[]; paths: PathType[] }) {
-  const selectedKeys = useDefaultMenuPath(menus, paths);
+/**
+ *
+ * @param 处理权限过后的菜单列表
+ * @returns 完全体的菜单列表
+ */
+function LayoutMenu({ menus }: { menus: MenuItem[] }) {
+  const selectedKeys = useDefaultMenuPath(menus);
   const { openKeys, setOpenKeys } = useOpenKeys(selectedKeys);
 
-  const items = useRouterMenu(menus);
-
+  const items = useRouteMenu(menus);
   // 默认展开一个
-  const onOpenChange: MenuProps["onOpenChange"] = keys => {
-    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
-
-    if (items.map(v => v.label).indexOf(latestOpenKey!) === -1) {
-      setOpenKeys(keys);
-    } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
-    }
+  const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
+    setOpenKeys(keys);
+    // const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+    // if (items.map((v) => v.label).indexOf(latestOpenKey!) === -1) {
+    //   setOpenKeys(keys);
+    // } else {
+    //   setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+    // }
   };
-
   return (
-    <Menu
-      style={{ height: "100%" }}
-      mode="inline"
-      items={items}
-      openKeys={openKeys}
-      selectedKeys={selectedKeys}
-      onOpenChange={onOpenChange}
-    />
+    <>
+      <Menu
+        items={items}
+        style={{ height: "100%" }}
+        mode="inline"
+        openKeys={openKeys}
+        selectedKeys={selectedKeys}
+        onOpenChange={onOpenChange}
+      />
+    </>
   );
 }
 
-// 处理菜单
-function useRouterMenu(menus: MenuItem[]) {
-  // 处理多级菜单
-  function handleMenu(menus: MenuItem[]): { label: string | ReactNode }[] {
-    return menus.map(route => {
-      if (route.children && route.children.length > 0) {
-        return {
-          label: <Link to={route.url!}>{route.label}</Link>,
-          key: route.url,
-          icon: route.icon,
-          children: handleMenu(route.children)
-        };
-      }
-      return {
-        label: <Link to={route.url!}>{route.label}</Link>,
-        key: route.url,
-        icon: route.icon
-      };
-    });
-  }
+interface ItemType {
+  label: string | ReactNode;
+  icon: ReactNode;
+  key?: Key;
+  children?: ItemType[];
+}
+
+// 处理路由菜单
+function useRouteMenu(menus: MenuItem[]) {
   return useMemo(() => {
-    return menus.map(route => {
+    return menus.map((route) => {
       // 如果存在url
       if (route.url) {
         return {
@@ -135,6 +84,7 @@ function useRouterMenu(menus: MenuItem[]) {
           icon: route.icon
         };
       }
+
       // 处理多级菜单
       if (route.children && route.children.length > 0) {
         const submenus = handleMenu(route.children);
@@ -151,14 +101,67 @@ function useRouterMenu(menus: MenuItem[]) {
         icon: route.icon
       };
     });
-  }, [JSON.stringify(menus)]);
+    function handleMenu(menus: MenuItem[]): ItemType[] {
+      return menus.map((route) => {
+        if (route.children && route.children.length > 0) {
+          return {
+            label: <Link to={route.url!}>{route.label}</Link>,
+            key: route.url,
+            icon: route.icon,
+            children: handleMenu(route.children)
+          };
+        }
+        return {
+          label: <Link to={route.url!}>{route.label}</Link>,
+          key: route.url,
+          icon: route.icon
+        };
+      });
+    }
+  }, [menus]);
 }
-// 处理默认展开菜单
+
+/**
+ * 处理菜单默认选中
+ */
+
+function useDefaultMenuPath(menus: MenuItem[]) {
+  const { pathname } = useLocation();
+
+  return useMemo(() => {
+    return getSelectKeys(menus);
+
+    function getSelectKeys(menus: MenuItem[]) {
+      const selectedKeys: string[] = [];
+
+      for (const menu of menus) {
+        if (menu.url && menu.url === pathname) {
+          selectedKeys.push(menu.url);
+          continue;
+        }
+
+        if (menu.children && menu.children.length > 0) {
+          const subSelectedKeys = getSelectKeys(menu.children);
+
+          if (subSelectedKeys.length > 0) {
+            selectedKeys.push(menu.label, ...subSelectedKeys);
+          }
+        }
+      }
+
+      return selectedKeys;
+    }
+  }, [menus, pathname]);
+}
+
+/**
+ * 处理默认展开菜单
+ */
 function useOpenKeys(selectedKeys: string[]) {
   const [openKeys, setOpenKeys] = useState(selectedKeys);
 
   useEffect(() => {
-    setOpenKeys(prev => {
+    setOpenKeys((prev) => {
       if (prev.length < selectedKeys.length) {
         return selectedKeys;
       }
@@ -167,34 +170,4 @@ function useOpenKeys(selectedKeys: string[]) {
   }, [selectedKeys]);
 
   return { openKeys, setOpenKeys };
-}
-function useDefaultMenuPath(menus: MenuItem[], paths: PathType[]) {
-  // 返回面包屑组件的最后一个元素
-  const pathEnd = paths.at(paths.length - 1);
-
-  // 获取应该选中的菜单
-  function getSelectKeys(menus: MenuItem[]) {
-    const selectedKeys: string[] = [];
-
-    for (const menu of menus) {
-      if (menu.url && menu.url === pathEnd?.url) {
-        selectedKeys.push(menu.url);
-        continue;
-      }
-
-      if (menu.children && menu.children.length > 0) {
-        const subSelectedKeys = getSelectKeys(menu.children);
-
-        if (subSelectedKeys.length > 0) {
-          selectedKeys.push(menu.label, ...subSelectedKeys);
-        }
-      }
-    }
-
-    return selectedKeys;
-  }
-
-  return useMemo(() => {
-    return getSelectKeys(menus);
-  }, [menus, pathEnd]);
 }

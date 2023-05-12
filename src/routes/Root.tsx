@@ -1,33 +1,9 @@
-import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "@/store-hooks";
-import { durableInfo } from "@/routes/auth/auth-slice";
+import { Outlet } from "react-router-dom";
+import { useAuthLogin, useAutoLogin, useAutoRefreshToken } from "./auth/use-auth";
 
 export default function Root() {
-  authLogin();
-
+  useAuthLogin();
+  useAutoLogin();
+  useAutoRefreshToken();
   return <Outlet />;
-}
-
-// 限制已登录用户到登录页面
-export function authLogin() {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(
-      durableInfo(() => {
-        if (pathname === "/login") {
-          navigate("/", { replace: true });
-          return;
-        }
-        navigate(pathname, { replace: true });
-      })
-    );
-  }, []);
-}
-
-export function useAutoLogout() {
-  console.log("auto-logout");
 }

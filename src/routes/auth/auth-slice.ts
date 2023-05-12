@@ -1,58 +1,107 @@
-import { AppDispatch } from "../../store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppDispatch, RootState } from "@/store/store";
+import { instance } from "@/utils/http";
+import { updateAccessToken } from "@/api/auth";
+import { AxiosError } from "axios";
+import { authenticationFailed } from "@/hooks/useRequest";
 
-export interface AuthInitialState {
+export interface AuthState {
   accessToken: string;
   username: string;
   authorities: string[];
+  expiresIn: number;
+  refreshToken: string;
 }
-const initialState = {
+const initialState: AuthState = {
   accessToken: "",
   username: "",
-  authorities: []
-} as AuthInitialState;
+  authorities: [],
+  expiresIn: 0,
+  refreshToken: ""
+};
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // 设置权限信息
-    setAuth(state, action: PayloadAction<AuthInitialState>) {
-      state.accessToken = action.payload.accessToken;
-      state.username = action.payload.username;
-      state.authorities = action.payload.authorities;
+    setAuth(state, payload: PayloadAction<AuthState>) {
+      state.accessToken = payload.payload.accessToken;
+      state.username = payload.payload.username;
+      state.authorities = payload.payload.authorities;
+      state.expiresIn = payload.payload.expiresIn;
+      state.refreshToken = payload.payload.refreshToken;
     },
-    // 清除权限信息
     clearAuth(state) {
       state.accessToken = "";
       state.username = "";
       state.authorities = [];
+      state.expiresIn = -1;
+      state.refreshToken = "";
     }
   }
 });
 
-const USER_INFO = "auth";
+export const { setAuth, clearAuth } = authSlice.actions;
+export default authSlice.reducer;
 
-// 用户登录
-export const login = (userInfo: AuthInitialState) => {
+// 登录
+export function login(auth: AuthState) {
   return (dispatch: AppDispatch) => {
-    dispatch(setAuth(userInfo));
-    setStorage(userInfo);
+    dispatch(setAuth(auth));
+    setStorage(auth);
   };
-};
-// 用户注销
-export const logout = () => {
+}
+/**
+ * 刷新token
+ * @returns
+ */
+export function autoRefreshToken() {
+  return (dispatch: AppDispatch, getState: () => RootState) => {
+    const { expiresIn, refreshToken } = getState().auth;
+
+    const currentSounds = Math.floor(new Date().getTime() / 1000);
+
+    const interTime = expiresIn - currentSounds;
+    // 控制提前刷新token阀门
+    const valveTime = 300;
+
+    if (interTime <= valveTime) {
+      // 此处刷新时间先写死
+      const expiresInSeconds = 1800;
+      const intervalTime = Math.floor(new Date().getTime() / 1000);
+
+      instance(updateAccessToken(refreshToken))
+        .then((res) => {
+          const { token: accessToken, username } = res.data;
+          dispatch(
+            login({
+              accessToken,
+              refreshToken: accessToken,
+              username,
+              authorities: ["penal", "device"],
+              expiresIn: expiresInSeconds + intervalTime
+            })
+          );
+        })
+        .catch((error) => {
+          const errorConfig = error as AxiosError;
+          authenticationFailed(dispatch, errorConfig);
+        });
+    }
+  };
+}
+// 登出
+export function logout() {
   return (dispatch: AppDispatch) => {
-    clearStorage();
     dispatch(clearAuth());
+    clearStorage();
   };
-};
+}
 
 // 用于持久化仓库数据
 export const durableInfo = (callback: VoidFunction) => {
   return (dispatch: AppDispatch) => {
     const info = getStorage();
-
     if (!info) return;
 
     dispatch(login(info));
@@ -60,20 +109,20 @@ export const durableInfo = (callback: VoidFunction) => {
   };
 };
 
-// 用户鉴权信息持久化
-function setStorage(auth: AuthInitialState) {
-  localStorage.setItem(USER_INFO, JSON.stringify(auth));
-}
-// 清除用户信息
-function clearStorage() {
-  localStorage.removeItem(USER_INFO);
-}
-// 获取用户信息
-export function getStorage(): AuthInitialState | null {
-  const userInfo = localStorage.getItem(USER_INFO);
-  if (!userInfo) return null;
-  return JSON.parse(userInfo);
-}
-export const { setAuth, clearAuth } = authSlice.actions;
+// 持久化用户信息
+const PERMISSION = "auth";
 
-export default authSlice.reducer;
+function setStorage(auth: AuthState) {
+  localStorage.setItem(PERMISSION, JSON.stringify(auth));
+}
+
+export function clearStorage() {
+  localStorage.removeItem(PERMISSION);
+}
+
+function getStorage() {
+  const getJson = localStorage.getItem(PERMISSION);
+  if (!getJson) return null;
+
+  return JSON.parse(getJson) as AuthState;
+}
